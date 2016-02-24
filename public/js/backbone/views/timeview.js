@@ -9,15 +9,13 @@ App.Views.TimeView = Backbone.View.extend({
   },
 
   render: function(){
+
     var allTrips = this.collection;
-    _.each(allTrips.models, function(trip){
-      console.log(trip)
-    })
     var sortedTrips=allTrips.sortBy(function(model){
       return start = new Date(model.get('start_date'))
     })
     _.each(sortedTrips, function(trip){
-      console.log(trip)
+
     })
 
   }
