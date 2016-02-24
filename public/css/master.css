@@ -1,14 +1,42 @@
 body{
   background-color: #f1f1f1;
   color: #205493;
-;
 }
 .usa-site-header{
   background-color: #112e51;
+  margin-top: 35px;
 }
 .usa-site-navbar{
   color: #ffffff;
 }
 .usa-width-one{
   border-bottom: 2px solid #112e51;
+}
+.usa-disclaimer{
+  background-color: #e59393;
+  font-size: 1.2em;
+  color: #f1f1f1;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+}
+h1{
+  margin: 0;
+  line-height: 2;
+}
+.tooltip {
+  background: #eee;
+  box-shadow: 0 0 5px #999999;
+  color: #333;
+  display: none;
+  font-size: 12px;
+  left: 130px;
+  padding: 10px;
+  position: absolute;
+  text-align: center;
+  top: 95px;
+  width: 80px;
+  z-index: 10;
 }

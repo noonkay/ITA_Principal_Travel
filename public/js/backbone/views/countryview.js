@@ -68,7 +68,7 @@ App.Views.CountryView = Backbone.View.extend({
     .attr('y', function(d, i){return (i*22)+13})
     .attr("font-family", "sans-serif")
     .attr("font-size", "11px")
-    .attr("fill", "white");;
+    .attr("fill", "white");
     ///begin second visualization
     var tripLengthData = [];
     _.each(data, function(trips){
@@ -85,9 +85,11 @@ App.Views.CountryView = Backbone.View.extend({
     })
 
 
-    var width = 400,
-    height = 300,
-    radius = Math.min(width, height) / 2;
+    var width = 700,
+    height = 400,
+    radius = Math.min(width, height) / 2,
+    legendRectSize = 18,
+    legendSpacing = 4;
 
     svg = d3.select(charts[0][1])
       .append('svg')
@@ -104,16 +106,45 @@ App.Views.CountryView = Backbone.View.extend({
     .value(function(d) {
       return d.time;
      })
-
+     color = d3.scale.category20b();
     var path = svg.selectAll('path')
       .data(pie(tripLengthData))
       .enter()
       .append('path')
       .attr('d', arc)
       .attr('fill', function(d,i){
-        return color(i)
+        return color(d.data.country)
       })
-  },
+
+    var legend = svg.selectAll('.legend')
+      .data(color.domain())
+      .enter()
+      .append('g')
+      .attr('class', 'legend')
+      .attr('transform', function(d, i) {
+        var height = legendRectSize + legendSpacing;
+        var offset =  height * color.domain().length / 2;
+        var horz = 300;
+        var vert = i * height - offset;
+        return 'translate(' + horz + ',' + vert + ')';
+      });
+
+      legend.append('rect')
+          .attr('width', legendRectSize)
+          .attr('height', legendRectSize)
+          .style('fill', color)
+          .style('stroke', color);
+
+
+      legend.append('text')
+      .attr('x', legendRectSize + legendSpacing)
+      .attr('y', legendRectSize - legendSpacing)
+      .text(function(d){return d;})
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "11px")
+
+  }
+
 
 
 })
