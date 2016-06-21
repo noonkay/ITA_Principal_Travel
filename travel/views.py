@@ -234,6 +234,7 @@ class ReportView(LoginRequiredView, TemplateView):
         countries = None
         eventtypes = None
         regions = None
+        principals = None
         if report_type == 'country':
             countries = Trip.objects.filter(start_date__year=current_year).values_list('events__cities_light_country__name', 'events__cities_light_country__id').distinct()
         elif report_type == 'event':
@@ -241,6 +242,8 @@ class ReportView(LoginRequiredView, TemplateView):
         elif report_type == 'region':
             regions = Trip.objects.filter(start_date__year=current_year).values_list('events__cities_light_country__agency_region__name', 'events__cities_light_country__agency_region__id').distinct()
             print(regions)
+        elif report_type == 'principal':
+            principals = Trip.objects.filter(start_date__year=current_year).values_list('principal__last_name', 'principal__id').distinct()
 
         if countries:
             context['attributes'] = list(countries)
@@ -269,6 +272,19 @@ class ReportView(LoginRequiredView, TemplateView):
             )
             data = _munge_data(resultset, 'event_type_name')
 
+        elif principals:
+            context['attributes'] = list(principals)
+            context['query_string'] = 'principal'
+            resultset = _report_queryset_by_attr(
+            current_year=current_year,
+            attr_set=[x[0] for x in principals],
+            orig_name='principal__last_name',
+            orig_id='principal__id',
+            new_name='principal_name',
+            new_id='principal_id'
+            )
+            data = _munge_data(resultset, 'principal_name')
+
         elif regions:
             context['attributes'] = list(regions)
             context['query_string'] = 'region'
@@ -288,11 +304,12 @@ class ReportView(LoginRequiredView, TemplateView):
             )
             data = _munge_data(resultset, 'region_name')
 
+
         context['year'] = current_year
         context['data_list'] = data
         context['months'] = month_names
         context['annual_report_list'] = unique_reporting_years
-        context['report_type_list'] = ['country', 'region', 'event']
+        context['report_type_list'] = ['country', 'region', 'event', 'principal']
         return context
 
 def _report_queryset_by_attr(*args, **kwargs):
