@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from dal import autocomplete
 from cities_light.models import City
 from .mixins import FilterMixin
-from .filters import TripFilter
+from .filters import TripFilter, EventFilter
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -94,9 +94,14 @@ def trip_delete(request, pk):
     return render(request, 'travel/trip_confirm_delete.html', {'trip': trip})
 
 
-class EventList(LoginRequiredView, ListView):
+class EventList(LoginRequiredView, FilterMixin, ListView):
     model = Event
+    filter_class = EventFilter
     paginate_by = 10
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(EventList, self).get_queryset(*args, **kwargs)
+        return qs
 
 
 class EventDetail(LoginRequiredView, DetailView):
